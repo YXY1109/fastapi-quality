@@ -1,0 +1,54 @@
+# Pre-commit hooks for code quality
+# Install: uv run pre-commit install
+# Run manually: uv run pre-commit run --all-files
+
+default_language_version:
+  python: python3.13
+
+repos:
+  # Ruff - Fast Python linter and formatter
+  # Replaces: flake8, pylint, isort, black
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff Lint
+        entry: uv run ruff check .
+        language: system
+        types_or: [python, pyi, jupyter]
+        args: [--fix]
+
+      - id: ruff-format
+        name: Ruff Format
+        entry: uv run ruff format .
+        language: system
+        types_or: [python, pyi, jupyter]
+
+  # Mypy - Static type checker
+  - repo: local
+    hooks:
+      - id: mypy
+        name: Mypy
+        entry: uv run mypy src/
+        language: system
+        types: [python]
+        pass_filenames: false
+
+  # Bandit - Security linter
+  - repo: local
+    hooks:
+      - id: bandit
+        name: Bandit
+        entry: uv run bandit -r src/
+        language: system
+        types: [python]
+        pass_filenames: false
+
+  # Tests - Run pytest
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Pytest
+        entry: uv run pytest tests/ -v
+        language: system
+        types: [python]
+        pass_filenames: false
